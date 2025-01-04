@@ -40,7 +40,7 @@ export default function Page() {
       "/api/connection-details",
       window.location.origin
     );
-    const response = await fetch(url.toString());
+    const response = await fetch(url.toString(), { cache: 'no-store' });
     const connectionDetailsData = await response.json();
     updateConnectionDetails(connectionDetailsData);
   }, []);

@@ -1,3 +1,5 @@
+export const fetchCache = 'force-no-store'
+
 import {
   AccessToken,
   AccessTokenOptions,
