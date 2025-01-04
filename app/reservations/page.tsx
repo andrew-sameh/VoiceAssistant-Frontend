@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { fetchReservations } from "./action";
-import Image from "next/image";
+// import Image from "next/image";
 interface Reservation {
   id: number;
   name: string;
