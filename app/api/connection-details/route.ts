@@ -1,4 +1,5 @@
 export const fetchCache = 'force-no-store'
+export const revalidate=0 // or low number
 
 import {
   AccessToken,
@@ -46,7 +47,10 @@ export async function GET() {
       participantToken: participantToken,
       participantName: participantIdentity,
     };
-    return NextResponse.json(data);
+    // return NextResponse.json(data);
+    const response = NextResponse.json(data);
+    response.headers.set('Cache-Control', 'no-store');
+    return response;
   } catch (error) {
     if (error instanceof Error) {
       console.error(error);
