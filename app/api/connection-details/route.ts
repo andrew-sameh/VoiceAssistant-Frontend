@@ -20,6 +20,12 @@ export type ConnectionDetails = {
   participantToken: string;
 };
 
+type RequestBody = {
+  mode: string;
+  namespace: string;
+  summary: string;
+};
+
 export async function GET() {
   try {
     if (LIVEKIT_URL === undefined) {
@@ -58,6 +64,61 @@ export async function GET() {
     }
   }
 }
+
+export async function POST(request: Request) {
+  let body: RequestBody
+  try {
+    body = await request.json()
+  } catch (e) {
+    return new Response('Invalid JSON', { status: 400 })
+  }
+
+  const {mode, namespace, summary} = body
+
+ try {
+    if (LIVEKIT_URL === undefined) {
+      throw new Error("LIVEKIT_URL is not defined");
+    }
+    if (API_KEY === undefined) {
+      throw new Error("LIVEKIT_API_KEY is not defined");
+    }
+    if (API_SECRET === undefined) {
+      throw new Error("LIVEKIT_API_SECRET is not defined");
+    }
+
+    // Generate participant token
+    const participantIdentity = `voice_assistant_user_${Math.floor(Math.random() * 10_000)}`;
+    const roomName = `voice_assistant_room_${Math.floor(Math.random() * 10_000)}`;
+    const participantToken = await createParticipantToken(
+      { identity: participantIdentity,
+        metadata: JSON.stringify({
+          namespace: namespace,
+          mode: mode,
+          summary: summary
+        })
+       },
+      roomName,
+    );
+
+    // Return connection details
+    const data: ConnectionDetails = {
+      serverUrl: LIVEKIT_URL,
+      roomName,
+      participantToken: participantToken,
+      participantName: participantIdentity,
+    };
+    // return NextResponse.json(data);
+    const response = NextResponse.json(data);
+    response.headers.set('Cache-Control', 'no-store');
+    return response;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error);
+      return new NextResponse(error.message, { status: 500 });
+    }
+  }
+}
+
 
 function createParticipantToken(
   userInfo: AccessTokenOptions,

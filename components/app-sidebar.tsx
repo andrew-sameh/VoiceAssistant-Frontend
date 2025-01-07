@@ -6,6 +6,7 @@ import {
   BookOpen,
   Bot,
   BrainCog,
+  FileText
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -32,6 +33,11 @@ const data = {
       title: "Reservations",
       url: "/reservations",
       icon: Notebook,
+    },
+    {
+      title: "RAG" ,
+      url: "/rag",
+      icon: FileText,
     },
     {
       title: "Documentation",
